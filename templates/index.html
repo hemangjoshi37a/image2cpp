@@ -5,71 +5,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image to Byte Array Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Image to Byte Array Converter</h1>
-        <form id="convertForm" class="space-y-4">
-            <div>
-                <label for="image" class="block text-sm font-medium text-gray-700">Select Image File</label>
-                <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
-            </div>
-            <div>
-                <label for="imageUrl" class="block text-sm font-medium text-gray-700">Or Enter Image URL</label>
-                <input type="url" id="imageUrl" name="imageUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-            </div>
-            <div>
-                <label for="threshold" class="block text-sm font-medium text-gray-700">Threshold (0-255)</label>
-                <input type="number" id="threshold" name="threshold" min="0" max="255" value="128" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-            </div>
-            <div>
-                <label for="mode" class="block text-sm font-medium text-gray-700">Mode</label>
-                <select id="mode" name="mode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    <option value="horizontal">Horizontal</option>
-                    <option value="vertical">Vertical</option>
-                </select>
-            </div>
-            <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Convert
-            </button>
-        </form>
-        <div id="result" class="mt-6"></div>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">Image to Byte Array Converter</h1>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <form id="convertForm" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="image" class="block text-sm font-medium text-gray-700">Select Image File</label>
+                    <input type="file" id="image" name="image" accept="image/*" class="mt-1 block w-full" onchange="previewImage(event)">
+                </div>
+                <div class="mb-4">
+                    <label for="image_url" class="block text-sm font-medium text-gray-700">Or Enter Image URL</label>
+                    <input type="text" id="image_url" name="image_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="mb-4">
+                    <label for="threshold" class="block text-sm font-medium text-gray-700">Threshold (0-255)</label>
+                    <input type="number" id="threshold" name="threshold" min="0" max="255" value="128" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Mode</label>
+                    <div class="mt-2">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="mode" value="horizontal" checked class="form-radio">
+                            <span class="ml-2">Horizontal</span>
+                        </label>
+                        <label class="inline-flex items-center ml-6">
+                            <input type="radio" name="mode" value="vertical" class="form-radio">
+                            <span class="ml-2">Vertical</span>
+                        </label>
+                    </div>
+                </div>
+
+
+
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Image Preview and Crop</label>
+                    <canvas id="imageCanvas" class="border border-gray-300 mt-2"></canvas>
+                </div>
+                <div class="flex justify-between">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Convert
+                    </button>
+                    <button type="button" onclick="saveCrop()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Save Crop
+                    </button>
+
+
+
+
+                </div>
+            </form>
+        </div>
+        <div id="result" class="mt-8"></div>
     </div>
 
     <script>
-        document.getElementById('convertForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            const imageFile = document.getElementById('image').files[0];
-            const imageUrl = document.getElementById('imageUrl').value;
-            const threshold = document.getElementById('threshold').value;
-            const mode = document.getElementById('mode').value;
+        let canvas, image;
+        let cropSettings = {{ initial_crop_settings | tojson | safe }};
+        console.log("Initial crop settings:", cropSettings);
 
-            if (imageFile) {
-                formData.append('image', imageFile);
-            } else if (imageUrl) {
-                formData.append('image_url', imageUrl);
-            } else {
-                alert('Please select an image file or enter an image URL');
-                return;
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                initCanvas(e.target.result);
             }
 
-            formData.append('threshold', threshold);
-            formData.append('mode', mode);
+            reader.readAsDataURL(file);
+        }
 
-            try {
-                const response = await axios.post('/convert', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+        function initCanvas(imageUrl) {
+            canvas = new fabric.Canvas('imageCanvas', {
+                width: 400,
+                height: 300
+            });
+
+            fabric.Image.fromURL(imageUrl, function(img) {
+                image = img;
+                canvas.setWidth(img.width);
+                canvas.setHeight(img.height);
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+
+                const rect = new fabric.Rect({
+                    left: 0,
+                    top: 0,
+                    width: img.width,
+                    height: img.height,
+                    fill: 'rgba(0,0,0,0.3)',
+                    selectable: false,
+                    evented: false,
                 });
-                document.getElementById('result').innerHTML = response.data;
-            } catch (error) {
+
+                const cropRect = new fabric.Rect({
+                    left: cropSettings.left,
+                    top: cropSettings.top,
+                    width: img.width - cropSettings.left - cropSettings.right,
+                    height: img.height - cropSettings.top - cropSettings.bottom,
+                    fill: 'transparent',
+                    stroke: 'white',
+                    strokeWidth: 2,
+                    cornerColor: 'white',
+                    cornerStrokeColor: 'black',
+                    cornerSize: 10,
+                    transparentCorners: false,
+                });
+
+                canvas.add(rect, cropRect);
+                canvas.setActiveObject(cropRect);
+                canvas.renderAll();
+                console.log("Canvas initialized with crop settings:", cropSettings);
+            });
+        }
+
+
+        function saveCrop() {
+            const cropRect = canvas.getActiveObject();
+            cropSettings = {
+                left: Math.round(cropRect.left),
+                top: Math.round(cropRect.top),
+                right: Math.round(image.width - (cropRect.left + cropRect.width)),
+                bottom: Math.round(image.height - (cropRect.top + cropRect.height))
+            };
+            console.log("Saving crop settings:", cropSettings);
+
+            fetch('/save_crop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cropSettings),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Crop settings saved successfully!');
+                    console.log("Saved crop settings:", data.crop_settings);
+                }
+            })
+            .catch((error) => {
                 console.error('Error:', error);
-                alert('An error occurred during conversion');
-            }
+            });
+        }
+
+
+        document.getElementById('convertForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/convert', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResult(data);
+                console.log("Conversion result:", data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
+
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h2 class="text-lg leading-6 font-medium text-gray-900">Conversion Result</h2>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <dl class="sm:divide-y sm:divide-gray-200">
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Byte Array</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <div class="bg-gray-100 p-2 rounded-md h-48 overflow-auto">
+                                        <code class="text-xs">${data.byte_array}</code>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Image Dimensions</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">${data.width} x ${data.height}</dd>
+                            </div>
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Preview (Cropped)</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <img src="data:image/png;base64,${data.preview_image}" alt="Preview" class="border border-gray-300 rounded-md">
+                                </dd>
+                            </div>
+                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Crop Settings</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    <ul>
+                                        <li>Top: ${data.crop_settings.top}</li>
+                                        <li>Right: ${data.crop_settings.right}</li>
+                                        <li>Bottom: ${data.crop_settings.bottom}</li>
+                                        <li>Left: ${data.crop_settings.left}</li>
+                                    </ul>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

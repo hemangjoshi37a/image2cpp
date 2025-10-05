@@ -6,8 +6,8 @@
     <title>Conversion Result</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
+<body class="bg-gray-100">
+    <div class="max-w-3xl mx-auto px-4 py-8">
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6">
                 <h2 class="text-lg leading-6 font-medium text-gray-900">Conversion Result</h2>
@@ -18,7 +18,7 @@
                         <dt class="text-sm font-medium text-gray-500">Byte Array</dt>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <div class="bg-gray-100 p-2 rounded-md h-48 overflow-auto">
-                                <pre class="text-xs">{{ byte_array }}</pre>
+                                <code class="text-xs">{{ byte_array }}</code>
                             </div>
                         </dd>
                     </div>
@@ -27,9 +27,20 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ width }} x {{ height }}</dd>
                     </div>
                     <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Preview</dt>
+                        <dt class="text-sm font-medium text-gray-500">Preview (Cropped)</dt>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <img src="data:image/png;base64,{{ preview_image }}" alt="Preview" class="border border-gray-300 rounded-md">
+                        </dd>
+                    </div>
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Crop Settings</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <ul>
+                                <li>Top: {{ crop_settings.top }}</li>
+                                <li>Right: {{ crop_settings.right }}</li>
+                                <li>Bottom: {{ crop_settings.bottom }}</li>
+                                <li>Left: {{ crop_settings.left }}</li>
+                            </ul>
                         </dd>
                     </div>
                 </dl>
@@ -41,16 +52,5 @@
             </a>
         </div>
     </div>
-    <script>
-    function copyToClipboard() {
-        const el = document.createElement('textarea');
-        el.value = `{{ byte_array }}`;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        alert('Copied to clipboard!');
-    }
-    </script>
 </body>
 </html>
