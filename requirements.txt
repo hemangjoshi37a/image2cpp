@@ -1,0 +1,22 @@
+# image2cpp Dependencies
+
+# Web Framework
+Flask==3.0.0
+flask-cors==4.0.0
+Werkzeug==3.0.1
+
+# Image Processing
+Pillow==10.1.0
+numpy==1.26.2
+
+# HTTP Requests
+requests==2.31.0
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Development Tools (optional)
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.1
+flake8==7.0.0

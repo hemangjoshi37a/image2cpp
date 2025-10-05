@@ -1,0 +1,135 @@
+2025-10-05 18:41:09,052 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.202.62:5000
+2025-10-05 18:41:09,052 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 18:41:09,059 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 18:41:09,462 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 18:41:09,478 - werkzeug - INFO -  * Debugger PIN: 285-019-014
+2025-10-05 18:41:19,083 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:41:19,099 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:41:19] "GET / HTTP/1.1" 200 -
+2025-10-05 18:41:25,099 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:41:25] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-05 18:41:38,484 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:41:38,485 - __main__ - DEBUG - Loaded compression factor: 35%
+2025-10-05 18:41:38,508 - root - DEBUG - Original image size: (480, 360)
+2025-10-05 18:41:38,508 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:41:38,508 - root - ERROR - Error in convert_image: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:41:38,509 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:41:38] "[35m[1mPOST /convert HTTP/1.1[0m" 500 -
+2025-10-05 18:41:54,680 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:41:54,681 - __main__ - DEBUG - Loaded compression factor: 35%
+2025-10-05 18:41:54,684 - root - DEBUG - Original image size: (480, 360)
+2025-10-05 18:41:54,684 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:41:54,684 - root - ERROR - Error in convert_image: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:41:54,685 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:41:54] "[35m[1mPOST /convert HTTP/1.1[0m" 500 -
+2025-10-05 18:49:10,456 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.202.62:5000
+2025-10-05 18:49:10,456 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 18:49:10,457 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 18:49:10,788 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 18:49:10,793 - werkzeug - INFO -  * Debugger PIN: 127-030-564
+2025-10-05 18:49:16,564 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:49:16,594 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:49:16] "GET / HTTP/1.1" 200 -
+2025-10-05 18:49:17,211 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:49:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-05 18:49:17,216 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:49:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-05 18:49:26,882 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:49:26,894 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:49:26] "GET / HTTP/1.1" 200 -
+2025-10-05 18:50:00,124 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.202.62:5000
+2025-10-05 18:50:00,124 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 18:50:00,125 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 18:50:00,488 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 18:50:00,505 - werkzeug - INFO -  * Debugger PIN: 127-030-564
+2025-10-05 18:50:02,589 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:50:02,602 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:50:02] "GET / HTTP/1.1" 200 -
+2025-10-05 18:50:03,633 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:50:03,634 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:50:03] "GET / HTTP/1.1" 200 -
+2025-10-05 18:50:09,588 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:50:09,589 - __main__ - DEBUG - Loaded compression factor: 35%
+2025-10-05 18:50:09,613 - __main__ - DEBUG - Original image size: (480, 360)
+2025-10-05 18:50:09,613 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:50:09,613 - root - ERROR - Error in convert_image: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:50:09,614 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:50:09] "[35m[1mPOST /convert HTTP/1.1[0m" 500 -
+2025-10-05 18:50:45,387 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.202.62:5000
+2025-10-05 18:50:45,387 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 18:50:45,388 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 18:50:45,770 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 18:50:45,777 - werkzeug - INFO -  * Debugger PIN: 127-030-564
+2025-10-05 18:50:47,542 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:50:47,554 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:50:47] "GET / HTTP/1.1" 200 -
+2025-10-05 18:50:52,918 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:50:52,920 - __main__ - DEBUG - Loaded compression factor: 35%
+2025-10-05 18:50:52,941 - __main__ - DEBUG - Original image size: (480, 360)
+2025-10-05 18:50:52,941 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:50:52,941 - root - ERROR - Error in convert_image: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:50:52,942 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:50:52] "[35m[1mPOST /convert HTTP/1.1[0m" 500 -
+2025-10-05 18:51:00,839 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:51:00,840 - __main__ - DEBUG - Loaded compression factor: 35%
+2025-10-05 18:51:00,840 - __main__ - INFO - Processing image 1/2: n7D49mavVQA-HQ.jpg
+2025-10-05 18:51:00,843 - __main__ - DEBUG - Original image size: (480, 360)
+2025-10-05 18:51:00,843 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:51:00,843 - __main__ - ERROR - Error processing n7D49mavVQA-HQ.jpg: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:51:00,844 - __main__ - INFO - Processing image 2/2: mq2.jpeg
+2025-10-05 18:51:00,844 - PIL.Image - DEBUG - Importing AvifImagePlugin
+2025-10-05 18:51:00,854 - PIL.Image - DEBUG - Importing BlpImagePlugin
+2025-10-05 18:51:00,856 - PIL.Image - DEBUG - Importing BmpImagePlugin
+2025-10-05 18:51:00,856 - PIL.Image - DEBUG - Importing BufrStubImagePlugin
+2025-10-05 18:51:00,857 - PIL.Image - DEBUG - Importing CurImagePlugin
+2025-10-05 18:51:00,857 - PIL.Image - DEBUG - Importing DcxImagePlugin
+2025-10-05 18:51:00,859 - PIL.Image - DEBUG - Importing DdsImagePlugin
+2025-10-05 18:51:00,863 - PIL.Image - DEBUG - Importing EpsImagePlugin
+2025-10-05 18:51:00,865 - PIL.Image - DEBUG - Importing FitsImagePlugin
+2025-10-05 18:51:00,866 - PIL.Image - DEBUG - Importing FliImagePlugin
+2025-10-05 18:51:00,867 - PIL.Image - DEBUG - Importing FpxImagePlugin
+2025-10-05 18:51:00,873 - PIL.Image - DEBUG - Importing FtexImagePlugin
+2025-10-05 18:51:00,874 - PIL.Image - DEBUG - Importing GbrImagePlugin
+2025-10-05 18:51:00,875 - PIL.Image - DEBUG - Importing GifImagePlugin
+2025-10-05 18:51:00,875 - PIL.Image - DEBUG - Importing GribStubImagePlugin
+2025-10-05 18:51:00,876 - PIL.Image - DEBUG - Importing Hdf5StubImagePlugin
+2025-10-05 18:51:00,883 - PIL.Image - DEBUG - Importing IcnsImagePlugin
+2025-10-05 18:51:00,885 - PIL.Image - DEBUG - Importing IcoImagePlugin
+2025-10-05 18:51:00,887 - PIL.Image - DEBUG - Importing ImImagePlugin
+2025-10-05 18:51:00,889 - PIL.Image - DEBUG - Importing ImtImagePlugin
+2025-10-05 18:51:00,890 - PIL.Image - DEBUG - Importing IptcImagePlugin
+2025-10-05 18:51:00,892 - PIL.Image - DEBUG - Importing JpegImagePlugin
+2025-10-05 18:51:00,892 - PIL.Image - DEBUG - Importing Jpeg2KImagePlugin
+2025-10-05 18:51:00,892 - PIL.Image - DEBUG - Importing McIdasImagePlugin
+2025-10-05 18:51:00,893 - PIL.Image - DEBUG - Importing MicImagePlugin
+2025-10-05 18:51:00,898 - PIL.Image - DEBUG - Importing MpegImagePlugin
+2025-10-05 18:51:00,899 - PIL.Image - DEBUG - Importing MpoImagePlugin
+2025-10-05 18:51:00,900 - PIL.Image - DEBUG - Importing MspImagePlugin
+2025-10-05 18:51:00,901 - PIL.Image - DEBUG - Importing PalmImagePlugin
+2025-10-05 18:51:00,902 - PIL.Image - DEBUG - Importing PcdImagePlugin
+2025-10-05 18:51:00,902 - PIL.Image - DEBUG - Importing PcxImagePlugin
+2025-10-05 18:51:00,902 - PIL.Image - DEBUG - Importing PdfImagePlugin
+2025-10-05 18:51:00,909 - PIL.Image - DEBUG - Importing PixarImagePlugin
+2025-10-05 18:51:00,910 - PIL.Image - DEBUG - Importing PngImagePlugin
+2025-10-05 18:51:00,910 - PIL.Image - DEBUG - Importing PpmImagePlugin
+2025-10-05 18:51:00,910 - PIL.Image - DEBUG - Importing PsdImagePlugin
+2025-10-05 18:51:00,911 - PIL.Image - DEBUG - Importing QoiImagePlugin
+2025-10-05 18:51:00,912 - PIL.Image - DEBUG - Importing SgiImagePlugin
+2025-10-05 18:51:00,912 - PIL.Image - DEBUG - Importing SpiderImagePlugin
+2025-10-05 18:51:00,913 - PIL.Image - DEBUG - Importing SunImagePlugin
+2025-10-05 18:51:00,913 - PIL.Image - DEBUG - Importing TgaImagePlugin
+2025-10-05 18:51:00,914 - PIL.Image - DEBUG - Importing TiffImagePlugin
+2025-10-05 18:51:00,914 - PIL.Image - DEBUG - Importing WebPImagePlugin
+2025-10-05 18:51:00,920 - PIL.Image - DEBUG - Importing WmfImagePlugin
+2025-10-05 18:51:00,921 - PIL.Image - DEBUG - Importing XbmImagePlugin
+2025-10-05 18:51:00,923 - PIL.Image - DEBUG - Importing XpmImagePlugin
+2025-10-05 18:51:00,924 - PIL.Image - DEBUG - Importing XVThumbImagePlugin
+2025-10-05 18:51:00,929 - __main__ - DEBUG - Original image size: (320, 180)
+2025-10-05 18:51:00,930 - __main__ - ERROR - Error applying crop: Invalid crop settings: result would be empty or negative
+2025-10-05 18:51:00,930 - __main__ - ERROR - Error processing mq2.jpeg: Failed to crop image: Invalid crop settings: result would be empty or negative
+2025-10-05 18:51:00,930 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:51:00] "POST /batch_convert HTTP/1.1" 200 -
+2025-10-05 18:51:04,048 - __main__ - WARNING - Validation error in generate_code: No image data provided
+2025-10-05 18:51:04,049 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:51:04] "[31m[1mPOST /generate_code HTTP/1.1[0m" 400 -
+2025-10-05 18:51:15,125 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:51:15,126 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:51:15] "GET / HTTP/1.1" 200 -
+2025-10-05 18:51:17,402 - __main__ - DEBUG - Loaded crop settings: {'top': 644, 'right': 127, 'bottom': 590, 'left': 126}
+2025-10-05 18:51:17,403 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 18:51:17] "GET / HTTP/1.1" 200 -

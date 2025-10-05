@@ -6,11 +6,36 @@
     <title>Image to Byte Array Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+    <style>
+        .drop-zone {
+            border: 3px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+        .tab-button.active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-6 text-center">Image to Byte Array Converter</h1>
-        <div class="bg-white p-6 rounded-lg shadow-md">
+
+        <!-- Tab Navigation -->
+        <div class="mb-6 flex space-x-4 border-b border-gray-300">
+            <button class="tab-button active px-4 py-2 font-medium" onclick="switchTab('single')">Single Image</button>
+            <button class="tab-button px-4 py-2 font-medium" onclick="switchTab('batch')">Batch Convert</button>
+        </div>
+
+        <!-- Single Image Tab -->
+        <div id="singleTab" class="bg-white p-6 rounded-lg shadow-md">
             <form id="convertForm" enctype="multipart/form-data">
                 <div class="mb-4">
                     <label for="image" class="block text-sm font-medium text-gray-700">Select Image File</label>
@@ -37,10 +62,6 @@
                         </label>
                     </div>
                 </div>
-
-
-
-
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Image Preview and Crop</label>
                     <canvas id="imageCanvas" class="border border-gray-300 mt-2"></canvas>
@@ -52,21 +73,82 @@
                     <button type="button" onclick="saveCrop()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                         Save Crop
                     </button>
-
-
-
-
                 </div>
             </form>
         </div>
+
+        <!-- Batch Convert Tab -->
+        <div id="batchTab" class="bg-white p-6 rounded-lg shadow-md" style="display: none;">
+            <form id="batchConvertForm" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Drag & Drop Multiple Images</label>
+                    <div id="dropZone" class="drop-zone p-8 rounded-lg text-center cursor-pointer">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-600">Drop images here or click to select</p>
+                        <p class="mt-1 text-xs text-gray-500">Up to 20 images at once</p>
+                    </div>
+                    <input type="file" id="batchImages" name="images" multiple accept="image/*" class="hidden">
+                </div>
+                <div id="fileList" class="mb-4"></div>
+                <div class="mb-4">
+                    <label for="batchThreshold" class="block text-sm font-medium text-gray-700">Threshold (0-255)</label>
+                    <input type="number" id="batchThreshold" name="threshold" min="0" max="255" value="128" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Mode</label>
+                    <div class="mt-2">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="batchMode" value="horizontal" checked class="form-radio">
+                            <span class="ml-2">Horizontal</span>
+                        </label>
+                        <label class="inline-flex items-center ml-6">
+                            <input type="radio" name="batchMode" value="vertical" class="form-radio">
+                            <span class="ml-2">Vertical</span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Convert All Images
+                </button>
+            </form>
+        </div>
+
         <div id="result" class="mt-8"></div>
+        <div id="batchResult" class="mt-8"></div>
     </div>
 
     <script>
         let canvas, image;
         let cropSettings = {{ initial_crop_settings | tojson | safe }};
+        let conversionResults = [];
         console.log("Initial crop settings:", cropSettings);
 
+        // Tab switching functionality
+        function switchTab(tab) {
+            const singleTab = document.getElementById('singleTab');
+            const batchTab = document.getElementById('batchTab');
+            const tabButtons = document.querySelectorAll('.tab-button');
+
+            if (tab === 'single') {
+                singleTab.style.display = 'block';
+                batchTab.style.display = 'none';
+                tabButtons[0].classList.add('active');
+                tabButtons[1].classList.remove('active');
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('batchResult').style.display = 'none';
+            } else {
+                singleTab.style.display = 'none';
+                batchTab.style.display = 'block';
+                tabButtons[0].classList.remove('active');
+                tabButtons[1].classList.add('active');
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('batchResult').style.display = 'block';
+            }
+        }
+
+        // Single image preview
         function previewImage(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -121,7 +203,6 @@
             });
         }
 
-
         function saveCrop() {
             const cropRect = canvas.getActiveObject();
             cropSettings = {
@@ -151,7 +232,7 @@
             });
         }
 
-
+        // Single image conversion
         document.getElementById('convertForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -162,6 +243,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                conversionResults = [data];
                 displayResult(data);
                 console.log("Conversion result:", data);
             })
@@ -174,8 +256,11 @@
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `
                 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div class="px-4 py-5 sm:px-6">
+                    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
                         <h2 class="text-lg leading-6 font-medium text-gray-900">Conversion Result</h2>
+                        <button onclick="showCodeGenerator([conversionResults[0]])" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                            Generate Code
+                        </button>
                     </div>
                     <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
                         <dl class="sm:divide-y sm:divide-gray-200">
@@ -197,21 +282,277 @@
                                     <img src="data:image/png;base64,${data.preview_image}" alt="Preview" class="border border-gray-300 rounded-md">
                                 </dd>
                             </div>
-                            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Crop Settings</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    <ul>
-                                        <li>Top: ${data.crop_settings.top}</li>
-                                        <li>Right: ${data.crop_settings.right}</li>
-                                        <li>Bottom: ${data.crop_settings.bottom}</li>
-                                        <li>Left: ${data.crop_settings.left}</li>
-                                    </ul>
-                                </dd>
-                            </div>
                         </dl>
                     </div>
                 </div>
             `;
+        }
+
+        // Batch conversion - Drag and drop
+        const dropZone = document.getElementById('dropZone');
+        const batchImages = document.getElementById('batchImages');
+
+        dropZone.addEventListener('click', () => batchImages.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            batchImages.files = files;
+            displayFileList(files);
+        });
+
+        batchImages.addEventListener('change', (e) => {
+            displayFileList(e.target.files);
+        });
+
+        function displayFileList(files) {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '<div class="text-sm font-medium text-gray-700 mb-2">Selected Files:</div>';
+
+            if (files.length === 0) return;
+
+            const listDiv = document.createElement('div');
+            listDiv.className = 'bg-gray-50 p-3 rounded-md';
+
+            Array.from(files).forEach((file, idx) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex items-center justify-between py-1';
+                fileItem.innerHTML = `
+                    <span class="text-sm text-gray-600">${idx + 1}. ${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
+                `;
+                listDiv.appendChild(fileItem);
+            });
+
+            fileList.appendChild(listDiv);
+        }
+
+        // Batch conversion form submission
+        document.getElementById('batchConvertForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+
+            const files = document.getElementById('batchImages').files;
+            Array.from(files).forEach(file => {
+                formData.append('images', file);
+            });
+
+            const threshold = document.getElementById('batchThreshold').value;
+            const mode = document.querySelector('input[name="batchMode"]:checked').value;
+
+            formData.append('threshold', threshold);
+            formData.append('mode', mode);
+
+            // Show loading state
+            const batchResult = document.getElementById('batchResult');
+            batchResult.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="animate-pulse">
+                        <p class="text-gray-600">Processing ${files.length} images...</p>
+                    </div>
+                </div>
+            `;
+
+            fetch('/batch_convert', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                conversionResults = data.results;
+                displayBatchResults(data);
+                console.log("Batch conversion results:", data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                batchResult.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            });
+        });
+
+        function displayBatchResults(data) {
+            const batchResult = document.getElementById('batchResult');
+
+            let html = `
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg leading-6 font-medium text-gray-900">Batch Conversion Results</h2>
+                            <p class="mt-1 text-sm text-gray-500">${data.total_processed} images processed successfully, ${data.total_errors} errors</p>
+                        </div>
+                        <button onclick="showCodeGenerator(conversionResults)" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                            Generate Code for All
+                        </button>
+                    </div>
+                    <div class="border-t border-gray-200">
+            `;
+
+            data.results.forEach((result, idx) => {
+                html += `
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="text-md font-medium text-gray-900">${result.filename}</h3>
+                                <p class="text-sm text-gray-500">Dimensions: ${result.width} x ${result.height}</p>
+                            </div>
+                            <img src="data:image/png;base64,${result.preview_image}" alt="${result.filename}" class="w-24 h-24 object-contain border border-gray-300 rounded">
+                        </div>
+                        <details class="mt-2">
+                            <summary class="cursor-pointer text-sm text-indigo-600 hover:text-indigo-800">View byte array</summary>
+                            <div class="mt-2 bg-gray-100 p-2 rounded-md max-h-32 overflow-auto">
+                                <code class="text-xs">${result.byte_array}</code>
+                            </div>
+                        </details>
+                    </div>
+                `;
+            });
+
+            if (data.errors && data.errors.length > 0) {
+                html += `
+                    <div class="p-4 bg-red-50">
+                        <h3 class="text-md font-medium text-red-900 mb-2">Errors:</h3>
+                `;
+                data.errors.forEach(error => {
+                    html += `<p class="text-sm text-red-700">- ${error.filename}: ${error.error}</p>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `</div></div>`;
+            batchResult.innerHTML = html;
+        }
+
+        // Code generation modal
+        function showCodeGenerator(results) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50';
+            modal.id = 'codeGeneratorModal';
+
+            modal.innerHTML = `
+                <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+                    <div class="mt-3">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-900">Generate Code</h3>
+                            <button onclick="closeCodeGenerator()" class="text-gray-400 hover:text-gray-600">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Code Style</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="codeStyle" value="arduino" checked class="form-radio">
+                                    <span class="ml-2">Arduino</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="codeStyle" value="cpp" class="form-radio">
+                                    <span class="ml-2">C++</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="codeStyle" value="python" class="form-radio">
+                                    <span class="ml-2">Python</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Variable Prefix</label>
+                            <input type="text" id="variablePrefix" value="image" class="w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="includeDimensions" checked class="form-checkbox">
+                                <span class="ml-2 text-sm text-gray-700">Include dimension constants</span>
+                            </label>
+                        </div>
+
+                        <button onclick="generateCode(${JSON.stringify(results)})" class="w-full mb-3 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Generate Code
+                        </button>
+
+                        <div id="generatedCodeContainer" class="hidden">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Generated Code</label>
+                                <button onclick="copyCode()" class="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                                    Copy to Clipboard
+                                </button>
+                            </div>
+                            <pre id="generatedCode" class="bg-gray-100 p-4 rounded-md overflow-auto max-h-96 text-xs"></pre>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        function closeCodeGenerator() {
+            const modal = document.getElementById('codeGeneratorModal');
+            if (modal) modal.remove();
+        }
+
+        function generateCode(results) {
+            const codeStyle = document.querySelector('input[name="codeStyle"]:checked').value;
+            const variablePrefix = document.getElementById('variablePrefix').value;
+            const includeDimensions = document.getElementById('includeDimensions').checked;
+
+            const payload = {
+                images: results.map(r => ({
+                    filename: r.filename,
+                    width: r.width,
+                    height: r.height,
+                    byte_array_raw: r.byte_array_raw
+                })),
+                code_style: codeStyle,
+                variable_prefix: variablePrefix,
+                include_dimensions: includeDimensions
+            };
+
+            fetch('/generate_code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const codeContainer = document.getElementById('generatedCodeContainer');
+                const codeElement = document.getElementById('generatedCode');
+                codeElement.textContent = data.code;
+                codeContainer.classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating code: ' + error.message);
+            });
+        }
+
+        function copyCode() {
+            const codeElement = document.getElementById('generatedCode');
+            navigator.clipboard.writeText(codeElement.textContent)
+                .then(() => {
+                    alert('Code copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy:', err);
+                });
         }
     </script>
 </body>
